@@ -1,0 +1,48 @@
+
+jif pred_neg
+j pred_notneg
+
+
+# c[i] is negative.
+pred_neg:
+sneg $0
+jif improve_ab
+
+lwprev $1 # $0 = x[i]
+lwfaddreg 0 # $0 = a + x[i]
+#swf 0 # a = $0
+
+lwprev $2 # $0 = y[i]
+lwfaddreg 1 # $0 = b + y[i]
+#swf 1 # b = $0
+
+j improve_ab
+
+# c[i] is not negative.
+pred_notneg:
+snotneg $0
+jif improve_ab
+
+lwprev $1 # $0 = x[i]
+lwfsubreg 0 # $0 = a - x[i]
+#swf 0 # a = $0
+
+lwprev $2 # $0 = y[i]
+lwfsubreg 1 # $0 = b - y[i]
+#swf 1 # b = $0
+
+j improve_ab
+
+
+
+seqc 0 # mem(4) = mem(8)?
+jif part_c
+
+lwf 0 # $0 = a
+lwmultinc $1 # $0 = ax[i]
+#swf 2 # mem(2) = ax[i]
+hold
+
+lwf 1 # $0 = b
+lwmultinc $2 # $0 = by[i]
+addback

@@ -1,0 +1,10 @@
+init F
+init F
+init F
+init F
+j loop
+set $0
+loop:
+j loop_2
+set $1
+loop_2:

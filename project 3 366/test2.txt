@@ -1,0 +1,7 @@
+add $1, $2
+loop1:
+add $2, $3
+loop2:
+add $3, $3
+j loop2
+jif loop1

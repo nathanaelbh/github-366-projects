@@ -1,0 +1,300 @@
+#addi $10, $0, 1 #negative or postive
+addi $14, $0, 0 # determins how many executions
+addi $1, $0, 7 # A = 5  keep
+addi $2, $0, 0 # B = -6  keep
+addi $3, $0, 150
+addi $8, $0, 0 # x[i] xxxxxxxxxxxxxxxxxxxxxxxxxxx
+addi $9, $0, 0 # y[i] yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
+#addi $8, $8, 1 # x[i] + 1
+addi $11, $0, 0x201c
+addi $12, $0, 0x241c
+addi $16, $0, 0x2820
+addi $17, $0, 0x2000
+addi $18, $0, 0x2004
+addi $19, $0, 1 #a
+addi $20, $0, 1 #b
+addi $21, $0, 0 #hold temp part c a
+addi $22, $0, 0 #hold temp part c b
+addi $23, $0, 0
+addi $24, $0, 0
+
+add $13, $0, $0 # counter
+sw   $8, 0($11) # x[i] save here M[0x201c]
+addi $11, $11, 4
+sw   $9, 0($12) # y[i] save here M[0x2220]
+addi $12, $12, 4
+addi $15, $0, -1
+addi $7, $0, 0
+
+addi $4, $0, 0 #hold x[i] temp mul
+addi $5, $0, 0 #hold y[i] temp mul
+addi $6, $0, -1
+addi $10, $0, 1 #hold negative
+
+
+addi $13, $0, 1 # steps
+
+
+
+
+loop:
+
+loopx: #11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111
+addi $14, $14, 1
+addi  $8, $8, 1
+sw   $8, 0($11)
+sw   $9, 0($12)
+
+mult $1, $8
+mflo $4
+mult $2, $9
+mflo $5
+add  $5, $5, $4
+add $23, $0, $5
+slt  $5, $0, $5
+
+mult $19, $8
+mflo $21
+mult $20, $9
+mflo $22
+add  $22, $22, $21
+
+beq  $23, $0, loopb
+bne  $5, $0, loopb
+beq  $5, $0, loopa
+
+loopb:
+addi $5, $0, 1
+sw   $5, 0($16)
+addi $16, $16, 4
+
+slt  $21, $0, $22
+bne  $0, $21, loopleave
+beq  $0, $22, loopleave
+add  $19, $19, $8
+add  $20, $20, $9
+
+loopleave:
+beq  $0, $0, leavex
+
+
+loopa:
+addi $5, $0, -1
+sw   $5, 0($16)
+addi $16, $16, 4
+
+slt  $21, $0, $22
+beq  $0, $22, leavexx
+bne  $0, $21, leavexx
+beq  $0, $0,  leavex
+leavexx:
+sub  $19, $19, $8
+sub  $20, $20, $9
+leavex:
+
+addi $7, $7, 1
+beq $7, $3 exit
+addi $11, $11, 4
+addi $12, $12, 4
+
+bne $13, $14, loopx
+addi $14, $0, 0 # reset
+beq $7, $3 exit
+
+
+
+loopy: #2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
+addi $14, $14, 1
+addi  $9, $9, 1
+sw   $8, 0($11)
+sw   $9, 0($12)
+
+mult $1, $8
+mflo $4
+mult $2, $9
+mflo $5
+add  $5, $5, $4
+add $23, $0, $5
+slt  $5, $0, $5
+
+mult $19, $8
+mflo $21
+mult $20, $9
+mflo $22
+add  $22, $22, $21
+
+beq  $23, $0, loopb1
+bne  $5, $0, loopb1
+beq  $5, $0, loopa1
+
+loopb1:
+addi $5, $0, 1
+sw   $5, 0($16)
+addi $16, $16, 4
+
+slt  $21, $0, $22
+bne  $0, $21, loopleave1
+beq  $0, $22, loopleave1
+add  $19, $19, $8
+add  $20, $20, $9
+
+loopleave1:
+beq  $0, $0, leavex1
+
+loopa1:
+addi $5, $0, -1
+sw   $5, 0($16)
+addi $16, $16, 4
+
+slt  $21, $0, $22
+beq  $0, $22, leavex2
+bne  $0, $21, leavex2
+beq  $0, $0,  leavex1
+leavex2:
+sub  $19, $19, $8
+sub  $20, $20, $9
+leavex1:
+
+
+addi $7, $7, 1
+beq $7, $3 exit
+addi $11, $11, 4
+addi $12, $12, 4
+bne $13, $14, loopy
+
+addi $14, $0, 0 # reset
+addi $13, $13, 1 #step
+beq $7, $3 exit
+
+loopxneg: #333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333
+addi $14, $14, 1
+addi  $8, $8, -1
+sw   $8, 0($11)
+sw   $9, 0($12)
+
+mult $1, $8
+mflo $4
+mult $2, $9
+mflo $5
+add  $5, $5, $4
+add $23, $0, $5
+slt  $5, $0, $5
+
+mult $19, $8
+mflo $21
+mult $20, $9
+mflo $22
+add  $22, $22, $21
+
+beq  $23, $0, loopbyn
+bne  $5, $0, loopbyn
+beq  $5, $0, loopayn
+
+loopbyn:
+addi $5, $0, 1
+sw   $5, 0($16)
+addi $16, $16, 4
+
+slt  $21, $0, $22
+bne  $0, $21, loopleave11
+beq  $0, $22, loopleave11
+add  $19, $19, $8
+add  $20, $20, $9
+
+loopleave11:
+beq  $0, $0, leavex11
+
+loopayn:
+addi $5, $0, -1
+sw   $5, 0($16)
+addi $16, $16, 4
+
+slt  $21, $0, $22
+beq  $0, $22, leavex21
+bne  $0, $21, leavex21
+beq  $0, $0,  leavex11
+leavex21:
+sub  $19, $19, $8
+sub  $20, $20, $9
+leavex11:
+
+addi $7, $7, 1
+beq $7, $3 exit
+addi $11, $11, 4
+addi $12, $12, 4
+
+bne $13, $14, loopxneg
+addi $14, $0, 0 # reset
+beq $7, $3 exit
+
+loopyneg: #4444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444
+addi $14, $14, 1
+addi  $9, $9, -1
+sw   $8, 0($11)
+sw   $9, 0($12)
+
+mult $1, $8
+mflo $4
+mult $2, $9
+mflo $5
+add  $5, $5, $4
+add $23, $0, $5
+slt  $5, $0, $5
+
+mult $19, $8
+mflo $21
+mult $20, $9
+mflo $22
+add  $22, $22, $21
+
+beq  $23, $0, loopbynn
+bne  $5, $0, loopbynn
+beq  $5, $0, loopaynn
+
+
+loopbynn:
+addi $5, $0, 1
+sw   $5, 0($16)
+addi $16, $16, 4
+
+slt  $21, $0, $22
+bne  $0, $21, loopleave2
+beq  $0, $22, loopleave2 #changessssssssssssssssssssssssssssssssssssssssssssssssss
+add  $19, $19, $8
+add  $20, $20, $9
+
+loopleave2:
+beq  $0, $0, leavex22
+
+
+loopaynn:
+addi $5, $0, -1
+sw   $5, 0($16)
+addi $16, $16, 4
+
+slt  $21, $0, $22
+beq  $0, $22, leavexx2
+bne  $0, $21, leavexx2
+beq  $0, $0,  leavex22
+leavexx2:
+sub  $19, $19, $8
+sub  $20, $20, $9
+
+leavex22:
+
+
+addi $7, $7, 1
+beq $7, $3 exit
+addi $11, $11, 4
+addi $12, $12, 4
+bne $13, $14, loopyneg
+
+addi $14, $0, 0 # reset
+addi $13, $13, 1 #step
+beq $7, $3 exit
+
+
+bne $7, $3 loop
+exit:
+sw  $19, 0($17)
+sw  $20, 0($18)
